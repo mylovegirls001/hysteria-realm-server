@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "镜像标签 (如 v1.0.0、test、dev)，留空则用 git short sha"
+        description: "镜像标签 (如 v1.0.0、test、dev)，留空则用 latest"
         required: false
         default: ""
 
@@ -31,9 +31,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=raw,value=latest
-            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
-            type=sha,prefix=,format=short
+            type=raw,value=${{ inputs.tag != '' && inputs.tag || 'latest' }}
 
       - uses: docker/build-push-action@v7
         with:
